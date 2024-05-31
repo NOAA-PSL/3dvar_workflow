@@ -40,13 +40,8 @@ export resubmit='true'
 # YYYYMMDDHH analysis date string to see if
 # full ensemble should be saved to HPSS (returns 0 if 
 # HPSS save should be done)
-if [ $machine == "orion" ] || [ $machine == "hercules" ]; then
-   export save_hpss="false"
-   export save_s3="true"
-else
-   export save_hpss="false"
-   export save_s3="true"
-fi
+export save_hpss="false"
+export save_s3="false"
 # override values from above for debugging.
 #export cleanup_controlanl='false'
 #export cleanup_observer='false'
@@ -132,7 +127,6 @@ elif [ $machine == "hercules" ]; then
    fi
    export sstice_datapath=/work2/noaa/gsienkf/whitaker/era5sstice
    ulimit -s unlimited
-   source $MODULESHOME/init/sh
    module use /work/noaa/epic/role-epic/spack-stack/hercules/spack-stack-1.6.0/envs/gsi-addon-env/install/modulefiles/Core 
    module load stack-intel/2021.9.0
    module load crtm-fix/2.4.0.1_emc
@@ -147,6 +141,29 @@ elif [ $machine == "hercules" ]; then
    module load py-netcdf4
    module list
    #export PATH="/work/noaa/gsienkf/whitaker/miniconda3/bin:$PATH"
+   export HDF5_DISABLE_VERSION_CHECK=1
+   export WGRIB=`which wgrib`
+elif [ [ "$machine" == 'noaacloud' ]; then
+   source $MODULESHOME/init/sh
+   export basedir=/lustre
+   export datadir=$basedir
+   export datapath="${datadir}/${exptname}"
+   export logdir="${datadir}/logs/${exptname}"
+   export obs_datapath=${datapath}/dumps
+   export sstice_datapath=/lustre/era5sstice
+   ulimit -s unlimited
+   module use /contrib/spack-stack/spack-stack-1.6.0/envs/gsi-addon-env/install/modulefiles/Core
+   module load stack-intel/2021.3.0
+   module load crtm-fix/2.4.0.1_emc
+   module load stack-intel-oneapi-mpi/2021.3.0
+   module load grib-util
+   module load parallelio
+   module load bufr/11.7.0 ## worked jan 5
+   module load crtm/2.4.0
+   module load gsi-ncdiag
+   module load python
+   module load py-netcdf4
+   module list
    export HDF5_DISABLE_VERSION_CHECK=1
    export WGRIB=`which wgrib`
 elif [ "$machine" == 'gaea' ]; then
@@ -334,6 +351,13 @@ elif [ "$machine" == 'orion' ] || [ $machine == "hercules" ]; then
    export CO2DIR=/work/noaa/gsienkf/whitaker/fix_NEW/fix_am/co2dat_4a
    export gsipath=/work/noaa/gsienkf/whitaker/GSI
    export fixgsi=/work/noaa/global/glopara/fix/gsi/20240208 
+   export fixcrtm=$CRTM_FIX
+   export execdir=${scriptsdir}/exec_${machine}
+   export gsiexec=${execdir}/gsi.x
+elif [ "$machine" == 'noaacloud' ]; then
+   export FIXDIR=/lustre/fix
+   export CO2DIR=/lustre/co2dat_4a
+   export fixgsi=/lustre/glopara/fix/gsi/20240208
    export fixcrtm=$CRTM_FIX
    export execdir=${scriptsdir}/exec_${machine}
    export gsiexec=${execdir}/gsi.x
