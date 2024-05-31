@@ -20,7 +20,7 @@ export ORES3=`echo $OCNRES | cut -c3-5`
 # in this case, to recenter around EnVar analysis set recenter_control_wgt=100
 export recenter_control_wgt=100
 export recenter_ensmean_wgt=`expr 100 - $recenter_control_wgt`
-export exptname="3dvar_workflow"
+export exptname="C${RES}_3dvar_iau"
 # for 'passive' or 'replay' cycling of control fcst 
 export replay_controlfcst='false'
 
@@ -356,7 +356,8 @@ elif [ "$machine" == 'orion' ] || [ $machine == "hercules" ]; then
    export execdir=${scriptsdir}/exec_${machine}
    export gsiexec=${execdir}/gsi.x
 elif [ "$machine" == 'noaacloud' ]; then
-   export FIXDIR=/lustre/fix
+   #export FIXDIR=/lustre/fix
+   export FIXDIR=/epic/ufs-weather-model/RT/NEMSfv3gfs/input-data-20240501
    export CO2DIR=/lustre/co2dat_4a
    export fixgsi=/lustre/glopara/fix/gsi/20240208
    export fixcrtm=$CRTM_FIX
