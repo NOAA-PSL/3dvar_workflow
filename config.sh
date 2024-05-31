@@ -163,6 +163,7 @@ elif [ [ "$machine" == 'noaacloud' ]; then
    module load gsi-ncdiag
    module load python
    module load py-netcdf4
+   module load aws-utils
    module list
    export HDF5_DISABLE_VERSION_CHECK=1
    export WGRIB=`which wgrib`
