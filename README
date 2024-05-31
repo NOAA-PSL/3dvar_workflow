@@ -1,6 +1,5 @@
-git clone https://github.com/jswhit/da_scripts C96_3dvar_iau
-cd C96_3dvar_iau
-git checkout 3dvar_workflow
+git clone https://github.com/NOAA-PSL/3dvar_workflow
+cd 3dvar_workflow
 git submodule update --init --recursive # to checkout build_gsinfo submodule
 
 config.sh is main script, hpss.sh is script to archive on hpss
@@ -39,7 +38,7 @@ total 199820
 -rwxr-x--- 1 jwhitake gsienkf   1766264 Nov  8 11:59 calc_increment_ncio.x
 -rwxr-x--- 1 jwhitake gsienkf 128521088 Nov 10 10:56 fv3_intel.exe
 -rwxr-x--- 1 jwhitake gsienkf  65461104 Nov 10 10:57 gsi.x
-global_enkf and gsi.x are from github.com/NOAA-EMC/GSI.
+gsi.x is from github.com/jack-woollen/GSI.
 calc_increment_ncio.x is from github.com/jswhit/GSI-utils (branch calc_inc_fix).
 fv3_intel.exe is from github.com/ufs-community/ufs-weather-model.
 
