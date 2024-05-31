@@ -20,7 +20,7 @@ export ORES3=`echo $OCNRES | cut -c3-5`
 # in this case, to recenter around EnVar analysis set recenter_control_wgt=100
 export recenter_control_wgt=100
 export recenter_ensmean_wgt=`expr 100 - $recenter_control_wgt`
-export exptname="C${RES}_3dvar_iau"
+export exptname="3dvar_workflow"
 # for 'passive' or 'replay' cycling of control fcst 
 export replay_controlfcst='false'
 
@@ -143,7 +143,7 @@ elif [ $machine == "hercules" ]; then
    #export PATH="/work/noaa/gsienkf/whitaker/miniconda3/bin:$PATH"
    export HDF5_DISABLE_VERSION_CHECK=1
    export WGRIB=`which wgrib`
-elif [ [ "$machine" == 'noaacloud' ]; then
+elif [ "$machine" == 'noaacloud' ]; then
    source $MODULESHOME/init/sh
    export basedir=/lustre
    export datadir=$basedir
@@ -328,7 +328,7 @@ export upd_aircraft=.true.
 # use pre-generated bias files.
 #export biascorrdir=${datadir}/biascor
 
-export nitermax=2 # number of retries
+export nitermax=1 # number of retries
 export scriptsdir="${basedir}/scripts/${exptname}"
 export homedir=$scriptsdir
 export incdate="${scriptsdir}/incdate.sh"

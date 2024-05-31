@@ -7,7 +7,7 @@
 #SBATCH -e C96_3dvar_iau.err
 #SBATCH -o C96_3dvar_iau.out
 
-export NODES=$SLURM_NNODES
+export NODES=$SLURM_JOB_NUM_NODES
 export corespernode=$SLURM_CPUS_ON_NODE
 export machine='noaacloud'
 
