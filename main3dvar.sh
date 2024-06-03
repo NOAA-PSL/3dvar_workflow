@@ -24,11 +24,12 @@ export OZINFO=$datapath/$analdate/ozinfo
 sh create_satinfo.sh $analdate > $SATINFO
 sh checknewsat.sh $analdate
 # is there a new sat instrument at this anal time?
-if [ $? -gt 0 ]; then
-   export newsat="true"
-else
-   export newsat="false"
-fi
+#if [ $? -gt 0 ]; then
+#   export newsat="true"
+#else
+#   export newsat="false"
+#fi
+export newsat="false"
 sh create_convinfo.sh $analdate > $CONVINFO
 sh create_ozinfo.sh $analdate > $OZINFO
 cd ..
