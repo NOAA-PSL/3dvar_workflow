@@ -38,8 +38,8 @@ S3PATH=/noaa-reanalyses-pds/observations/reanalysis
 # directory structure required by global-workflow
 TARGET_DIR=${OUTPATH}/${CDUMP}.${YYYYMMDD}/${HH}/atmos
 mkdir -p $TARGET_DIR
-obtypes=("airs" "airs" "amsua" "amsub" "amv" "atms" "cris" "cris" "geo" "geo" "gps" "hirs" "hirs" "hirs" "iasi" "mhs" "msu" "saphir" "seviri" "ssmi" "ssmis" "ssu")
-#obtypes=("airs" "amsua" "amsua" "amsub" "amv" "atms" "cris" "cris" "geo" "geo" "gps" "hirs" "hirs" "hirs" "iasi" "mhs" "msu" "saphir" "seviri" "ssmi" "ssmis" "ssu")
+#obtypes=("airs" "airs" "amsua" "amsub" "amv" "atms" "cris" "cris" "geo" "geo" "gps" "hirs" "hirs" "hirs" "iasi" "mhs" "msu" "saphir" "seviri" "ssmi" "ssmis" "ssu")
+obtypes=("airs" "amsua" "amsua" "amsub" "amv" "atms" "cris" "cris" "geo" "geo" "gps" "hirs" "hirs" "hirs" "iasi" "mhs" "msu" "saphir" "seviri" "ssmi" "ssmis" "ssu")
 #if [ $YYYYMMDDHH -lt "0009050106" ]; then
 ## before 2009050106 for amsua use nasa/r21c_repro/gmao_r21c_repro
 #   dirs=("nasa" "nasa/r21c_repro" "1bamub" "merged" "atms" "cris" "crisf4" "goesnd" "goesfv" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "eumetsat" "eumetsat" "1bssu")
@@ -47,16 +47,19 @@ obtypes=("airs" "airs" "amsua" "amsub" "amv" "atms" "cris" "cris" "geo" "geo" "g
 #   dumpnames=("airs_disc_final" "gmao_r21c_repro" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas")
 if [ $YYYYMMDDHH -ge "2001090106" ] &&  [ $YYYYMMDDHH -le "2016123118" ]; then
    # use EUMETSAT reprocessed gpsro
-   dirs=("nasa" "airsev" "1bamua" "1bamub" "merged" "atms" "cris" "crisf4" "goesnd" "goesfv" "eumetsat" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "eumetsat" "eumetsat" "1bssu")
-   obnames=("aqua" "airsev" "1bamua" "1bamub" "satwnd" "atms" "cris" "crisf4" "goesnd" "goesfv" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "ssmit" "ssmisu" "1bssu")
-   dumpnames=("airs_disc_final" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas")
-#   dirs=("nasa" "nasa" "1bamua" "1bamub" "merged" "atms" "cris" "crisf4" "goesnd" "goesfv" "eumetsat" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "eumetsat" "eumetsat" "1bssu")
-#   obnames=("aqua" "aqua" "1bamua" "1bamub" "satwnd" "atms" "cris" "crisf4" "goesnd" "goesfv" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "ssmit" "ssmisu" "1bssu")
-#   dumpnames=("airs_disc_final" "amsua_disc_final" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas")
+   #dirs=("nasa" "airsev" "1bamua" "1bamub" "merged" "atms" "cris" "crisf4" "goesnd" "goesfv" "eumetsat" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "eumetsat" "eumetsat" "1bssu")
+   #obnames=("aqua" "airsev" "1bamua" "1bamub" "satwnd" "atms" "cris" "crisf4" "goesnd" "goesfv" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "ssmit" "ssmisu" "1bssu")
+   #dumpnames=("airs_disc_final" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas")
+   dirs=("nasa" "nasa" "1bamua" "1bamub" "merged" "atms" "cris" "crisf4" "goesnd" "goesfv" "eumetsat" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "eumetsat" "eumetsat" "1bssu")
+   obnames=("aqua" "aqua" "1bamua" "1bamub" "satwnd" "atms" "cris" "crisf4" "goesnd" "goesfv" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "ssmit" "ssmisu" "1bssu")
+   dumpnames=("airs_disc_final" "amsua_disc_final" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas")
 else
-   dirs=("nasa" "airsev" "1bamua" "1bamub" "merged" "atms" "cris" "crisf4" "goesnd" "goesfv" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "eumetsat" "eumetsat" "1bssu")
-   obnames=("aqua" "airsev" "1bamua" "1bamub" "satwnd" "atms" "cris" "crisf4" "goesnd" "goesfv" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "ssmit" "ssmisu" "1bssu")
-   dumpnames=("airs_disc_final" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas")
+   #dirs=("nasa" "airsev" "1bamua" "1bamub" "merged" "atms" "cris" "crisf4" "goesnd" "goesfv" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "eumetsat" "eumetsat" "1bssu")
+   #obnames=("aqua" "airsev" "1bamua" "1bamub" "satwnd" "atms" "cris" "crisf4" "goesnd" "goesfv" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "ssmit" "ssmisu" "1bssu")
+   #dumpnames=("airs_disc_final" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas")
+   dirs=("nasa" "nasa" "1bamua" "1bamub" "merged" "atms" "cris" "crisf4" "goesnd" "goesfv" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "eumetsat" "eumetsat" "1bssu")
+   obnames=("aqua" "aqua" "1bamua" "1bamub" "satwnd" "atms" "cris" "crisf4" "goesnd" "goesfv" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "ssmit" "ssmisu" "1bssu")
+   dumpnames=("airs_disc_final" "amsua_disc_final" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas")
 fi
 nback=0
 for n in ${!obtypes[@]}; do
@@ -65,16 +68,16 @@ for n in ${!obtypes[@]}; do
         # NASA airs obs
         s3file=s3:/"${S3PATH}/${obtypes[$n]}/${dirs[$n]}/${obnames[$n]}/${YYYY}/${MM}/bufr/${dumpnames[$n]}.${YYYYMMDD}.t${HH}z.bufr"
         localfile="${TARGET_DIR}/${CDUMP}.t${HH}z.airsev.tm00.bufr_d"
-     elif [ ${obtypes[$n]} == "airs" ] && [ ${dirs[$n]} == "airsev" ]; then
-        # obtype=airs obname=airsev dir=airsev dumpname=gdas
-        # amsua data from NCEP airsev file
-        s3file=s3:/"${S3PATH}/${obtypes[$n]}/${dirs[$n]}/${YYYY}/${MM}/bufr/${dumpnames[$n]}.${YYYYMMDD}.t${HH}z.${obnames[$n]}.tm00.bufr_d"
+     #elif [ ${obtypes[$n]} == "airs" ] && [ ${dirs[$n]} == "airsev" ]; then
+     #   # obtype=airs obname=airsev dir=airsev dumpname=gdas
+     #   # amsua data from NCEP airsev file
+     #   s3file=s3:/"${S3PATH}/${obtypes[$n]}/${dirs[$n]}/${YYYY}/${MM}/bufr/${dumpnames[$n]}.${YYYYMMDD}.t${HH}z.${obnames[$n]}.tm00.bufr_d"
+     #   localfile="${TARGET_DIR}/${CDUMP}.t${HH}z.aquaamua.tm00.bufr_d"
+     elif [ ${obtypes[$n]} == "amsua" ] && [ ${dirs[$n]} == "nasa" ]; then
+        # obtype=amsua obname=aqua dir=nasa dumpname=amsua_disc_final
+        # NASA airs obs
+        s3file=s3:/"${S3PATH}/${obtypes[$n]}/${dirs[$n]}/${obnames[$n]}/${YYYY}/${MM}/bufr/${dumpnames[$n]}.${YYYYMMDD}.t${HH}z.bufr"
         localfile="${TARGET_DIR}/${CDUMP}.t${HH}z.aquaamua.tm00.bufr_d"
-     #elif [ ${obtypes[$n]} == "amsua" ] && [ ${dirs[$n]} == "nasa" ]; then
-     #   # obtype=amsua obname=aqua dir=nasa dumpname=amsua_disc_final
-     #   # NASA airs obs
-     #   s3file=s3:/"${S3PATH}/${obtypes[$n]}/${dirs[$n]}/${obnames[$n]}/${YYYY}/${MM}/bufr/${dumpnames[$n]}.${YYYYMMDD}.t${HH}z.bufr"
-     #  localfile="${TARGET_DIR}/${CDUMP}.t${HH}z.aquaamua.tm00.bufr_d"
      elif [ ${obtypes[$n]} == "amsua" ] && [ ${dirs[$n]} == "nasa/r21c_repro" ]; then
         s3file=s3:/"${S3PATH}/${obtypes[$n]}/${dirs[$n]}/${YYYY}/${MM}/bufr/${dumpnames[$n]}.${YYYYMMDD}.t${HH}z.${obnames[$n]}.tm00.bufr"
         localfile="${TARGET_DIR}/${CDUMP}.t${HH}z.1bamua.tm00.bufr_d"
