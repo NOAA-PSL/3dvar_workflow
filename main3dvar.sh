@@ -19,8 +19,11 @@ source $startupenv
 
 cd build_gsinfo
 export SATINFO=$datapath/$analdate/satinfo
+/bin/rm -f $SATINFO
 export CONVINFO=$datapath/$analdate/convinfo
+/bin/rm -f $CONVINFO
 export OZINFO=$datapath/$analdate/ozinfo
+/bin/rm -f $OZINFO
 sh create_satinfo.sh $analdate > $SATINFO
 sh checknewsat.sh $analdate
 # is there a new sat instrument at this anal time?
@@ -138,7 +141,13 @@ sh ${scriptsdir}/run_gsianal.sh > ${current_logdir}/run_gsianal.out 2>&1
 # once gsi has completed, check log files.
 gsi_done=`cat ${current_logdir}/run_gsi_anal.log`
 if [ $gsi_done == 'yes' ]; then
- echo "$analdate $type analysis completed successfully `date`"
+ grep -q 'PCGSOI: WARNING **** Stopping inner iteration ***' ${datapath2}/gsistats.${analdate}_control
+ if [ $? -eq 0 ]; then
+    echo "$analdate $type analysis completed successfully `date`"
+ else
+    echo "$analdate $type analysis did not converge, exiting `date`"
+    exit 1
+ fi
 else
  echo "$analdate $type analysis did not complete successfully, exiting `date`"
  exit 1
