@@ -51,31 +51,17 @@ export save_s3="false"
 #export do_cleanup='false'
 #export save_hpss="false" # save data each analysis time to HPSS
 
-source $MODULESHOME/init/sh
 if [ "$machine" == 'hera' ]; then
-   export basedir=/scratch2/BMC/gsienkf/${USER}
-   export datadir=$basedir
-   export datapath="${datadir}/${exptname}"
-   export logdir="${datadir}/logs/${exptname}"
-   export hsidir="/ESRL/BMC/gsienkf/2year/whitaker/${exptname}"
-   if [ $use_s3obs == "true" ]; then
-      export obs_datapath=${datapath}/dumps
-   else
-      export obs_datapath=/scratch1/NCEPDEV/global/glopara/dump
-   fi
-   export sstice_datapath=/scratch2/NCEPDEV/stmp1/Jeffrey.S.Whitaker/era5sstice
-   module purge
-   module load intel/18.0.5.274
-   module load impi/2018.0.4 
-   #module use -a /scratch1/NCEPDEV/nems/emc.nemspara/soft/modulefiles
-   #module load netcdf_parallel/4.7.4
-   #module load hdf5_parallel/1.10.6.release
-   module use -a /scratch1/NCEPDEV/global/gwv/lp/lib/modulefiles
-   module load netcdfp/4.7.4
-   #module load esmflocal/8.0.1.08bs
-   module use -a /scratch1/NCEPDEV/nems/emc.nemspara/soft/modulefiles
-   module load hdf5_parallel/1.10.6
-   #module load netcdf_parallel/4.7.4
+   export python=`which python`
+   export fv3gfspath=/scratch1/NCEPDEV/global/glopara/fix_NEW
+   export FIXDIR=/scratch2/NAGAPE/epic/UFS-WM_RT/NEMSfv3gfs/input-data-20221101
+   export FIXFV3=${fv3gfspath}/fix_fv3_gmted2010
+   export FIXGLOBAL=${fv3gfspath}/fix_am
+   export CO2DIR=/scratch2/BMC/gsienkf/whitaker/fix_NEW/fix_am/co2dat_4a
+   export fixgsi=/scratch1/NCEPDEV/global/glopara/fix/gsi/20240208
+   export fixcrtm=$CRTM_FIX
+   export execdir=${scriptsdir}/exec_${machine}
+   export gsiexec=${execdir}/gsi.x
 elif [ "$machine" == 'orion' ]; then
    export basedir=/work/noaa/gsienkf/${USER}
    export datadir=$basedir
@@ -334,15 +320,32 @@ export homedir=$scriptsdir
 export incdate="${scriptsdir}/incdate.sh"
 
 if [ "$machine" == 'hera' ]; then
-   export python=/contrib/anaconda/2.3.0/bin/python
-   export fv3gfspath=/scratch1/NCEPDEV/global/glopara
-   export FIXFV3=${fv3gfspath}/fix_nco_gfsv16/fix_fv3_gmted2010
-   export FIXGLOBAL=${fv3gfspath}/fix_nco_gfsv16/fix_am
-   export gsipath=${basedir}/gsi/GSI-github-jswhit-master
-   export fixgsi=${gsipath}/fix
-   export fixcrtm=/scratch2/NCEPDEV/nwprod/NCEPLIBS/fix/crtm_v2.3.0
-   export execdir=${scriptsdir}/exec_${machine}
-   export gsiexec=${execdir}/gsi.x
+   export basedir=/scratch2/BMC/gsienkf/${USER}
+   export datadir=$basedir
+   export datapath="${datadir}/${exptname}"
+   export logdir="${datadir}/logs/${exptname}"
+   export hsidir="/ESRL/BMC/gsienkf/2year/whitaker/${exptname}"
+   if [ $use_s3obs == "true" ]; then
+      export obs_datapath=${datapath}/dumps
+   else
+      export obs_datapath=/scratch1/NCEPDEV/global/glopara/dump
+   fi
+   export sstice_datapath=/scratch2/NCEPDEV/stmp1/Jeffrey.S.Whitakerera5sstice
+   ulimit -s unlimited
+   module use /scratch1/NCEPDEV/nems/role.epic/spack-stack/spack-stack-1.6.0/envs/gsi-addon-dev-rocky8/install/modulefiles/Core 
+   module load stack-intel/2021.5.0
+   module load crtm-fix/2.4.0.1_emc
+   module load stack-intel-oneapi-mpi/2021.5.1
+   module load grib-util
+   module load parallelio
+   module load bufr/11.7.0
+   module load crtm/2.4.0
+   module load gsi-ncdiag
+   module load python
+   module load py-netcdf4
+   module list
+   export HDF5_DISABLE_VERSION_CHECK=1
+   export WGRIB=`which wgrib`
 elif [ "$machine" == 'orion' ] || [ $machine == "hercules" ]; then
    export python=`which python`
    export fv3gfspath=/work/noaa/global/glopara/fix_NEW

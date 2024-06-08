@@ -2,10 +2,10 @@
 #SBATCH -q debug
 #SBATCH -t 00:30:00
 #SBATCH -A gsienkf
-#SBATCH -N 8    
-#SBATCH -J C192_3dvar_test
-#SBATCH -e C192_3dvar_test.err
-#SBATCH -o C192_3dvar_test.out
+#SBATCH -N 10    
+#SBATCH -J C96_3dvar_iau
+#SBATCH -e C96_3dvar_iau.err
+#SBATCH -o C96_3dvar_iau.out
 
 export NODES=$SLURM_NNODES
 export corespernode=$SLURM_CPUS_ON_NODE
@@ -26,6 +26,13 @@ elif [ $NODES -eq 8 ]; then
   export write_groups_ctl=8 # write groups for control forecast.
   export write_tasks_ctl=4
   export layout_ctl="6,8" # layout_x,layout_y (total # mpi tasks = $layout_x*$layout_y*6=($fg_proc/$fg_threads) - $write_tasks*$write_groups)
+elif [ $NODES -eq 10 ]; then
+  # 4 nodes 1thread
+  export control_threads=1
+  export control_proc=400
+  export write_groups_ctl=2 # write groups for control forecast.
+  export write_tasks_ctl=8
+  export layout_ctl="8,8" # layout_x,layout_y (total # mpi tasks = $layout_x*$layout_y*6=($fg_proc/$fg_threads) - $write_tasks*$write_groups)
 elif [ $NODES -eq 20 ]; then
   # 20 nodes, 2 threads
   export control_threads=2
