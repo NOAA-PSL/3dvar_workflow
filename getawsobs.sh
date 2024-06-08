@@ -25,7 +25,6 @@ if [ $? -ne 0 ]; then
       echo "cluster must be 'hera', 'hercules' or 'es' (gaea)"
       exit 1
    fi
-   fi
 fi
 which aws
 if [ $? -ne 0 ]; then
