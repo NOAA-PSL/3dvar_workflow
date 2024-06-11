@@ -167,7 +167,7 @@ elif [ "$machine" == 'noaacloud' ]; then
    module load py-netcdf4
    module load aws-utils
    module list
-   export HIRS_FIX=/contrib/Jeffrey.S.Whitaker/hirs_fix
+   export HIRS_FIX=/lustre/hirs_fix
    export HDF5_DISABLE_VERSION_CHECK=1
    export WGRIB=`which wgrib`
 elif [ "$machine" == 'gaea' ]; then

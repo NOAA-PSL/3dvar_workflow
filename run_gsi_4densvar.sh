@@ -564,7 +564,7 @@ for file in $(awk '{if($1!~"!"){print $1}}' satinfo | sort | uniq); do
    instr=`echo $file | cut -c1-4`
    if [ $instr == "hirs" ]; then
       $nln ${HIRS_FIX}/${file}.SpcCoeff.bin ./crtm_coeffs/${file}.SpcCoeff.bin
-      $nln ${HIRS_FIX}/${file}.TauCoeff.bin ./crtm_coeffs/${file}.TauCoeff.bin
+      $nln $fixcrtm/${file}.TauCoeff.bin ./crtm_coeffs/${file}.TauCoeff.bin
    else
       $nln $fixcrtm/${file}.SpcCoeff.bin ./crtm_coeffs/${file}.SpcCoeff.bin
       $nln $fixcrtm/${file}.TauCoeff.bin ./crtm_coeffs/${file}.TauCoeff.bin
