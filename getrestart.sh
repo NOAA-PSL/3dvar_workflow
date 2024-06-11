@@ -7,7 +7,7 @@
 #SBATCH -J getrestart
 #SBATCH -e getrestart.out
 #SBATCH -o getrestart.out
-# need envars:  analdate, datapath, s3path
+# need envars:  analdate, datapath
 
 which aws
 if [ $? -ne 0 ]; then
