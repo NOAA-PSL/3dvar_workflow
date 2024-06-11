@@ -8,27 +8,27 @@
  "TRACER", "atmos_mod", "liq_wat"
            "longname",     "cloud water mixing ratio"
            "units",        "kg/kg"
-       "profile_type", "fixed", "surface_value=1.e30" /
+       "profile_type", "fixed", "surface_value=0" /
 # prognostic ice water mixing ratio
  "TRACER", "atmos_mod", "ice_wat"
            "longname",     "cloud ice mixing ratio"
            "units",        "kg/kg"
-       "profile_type", "fixed", "surface_value=1.e30" /
+       "profile_type", "fixed", "surface_value=0" /
 # prognostic rain water mixing ratio
  "TRACER", "atmos_mod", "rainwat"
            "longname",     "rain water mixing ratio"
            "units",        "kg/kg"
-       "profile_type", "fixed", "surface_value=1.e30" /
+       "profile_type", "fixed", "surface_value=0" /
 # prognostic snow water mixing ratio
  "TRACER", "atmos_mod", "snowwat"
            "longname",     "snow water mixing ratio"
            "units",        "kg/kg"
-       "profile_type", "fixed", "surface_value=1.e30" /
+       "profile_type", "fixed", "surface_value=0." /
 # prognostic Grau water mixing ratio
  "TRACER", "atmos_mod", "graupel"
            "longname",     "graupel mixing ratio"
            "units",        "kg/kg"
-       "profile_type", "fixed", "surface_value=1.e30" /
+       "profile_type", "fixed", "surface_value=0." /
 # prognostic cloud water number concentration - not for non-aerosol runs
  "TRACER", "atmos_mod", "ice_nc"
            "longname",     "cloud ice water number concentration"
@@ -43,7 +43,7 @@
  "TRACER", "atmos_mod", "o3mr"
            "longname",     "ozone mixing ratio"
            "units",        "kg/kg"
-       "profile_type", "fixed", "surface_value=1.e30" /
+       "profile_type", "fixed", "surface_value=0" /
 # prognostic subgrid scale turbulent kinetic energy
  "TRACER", "atmos_mod", "sgs_tke"
            "longname",     "subgrid scale turbulent kinetic energy"

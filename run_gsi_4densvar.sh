@@ -561,8 +561,14 @@ GSATANG=${GSATANG:-$datgesm1/${prefix_tbc}.satang}
 # CRTM Spectral and Transmittance coefficients
 mkdir -p crtm_coeffs
 for file in $(awk '{if($1!~"!"){print $1}}' satinfo | sort | uniq); do
-   $nln $fixcrtm/${file}.SpcCoeff.bin ./crtm_coeffs/${file}.SpcCoeff.bin
-   $nln $fixcrtm/${file}.TauCoeff.bin ./crtm_coeffs/${file}.TauCoeff.bin
+   instr=`echo $file | cut -c1-4`
+   if [ $instr == "hirs" ]; then
+      $nln ${HIRS_FIX}/${file}.SpcCoeff.bin ./crtm_coeffs/${file}.SpcCoeff.bin
+      $nln ${HIRS_FIX}/${file}.TauCoeff.bin ./crtm_coeffs/${file}.TauCoeff.bin
+   else
+      $nln $fixcrtm/${file}.SpcCoeff.bin ./crtm_coeffs/${file}.SpcCoeff.bin
+      $nln $fixcrtm/${file}.TauCoeff.bin ./crtm_coeffs/${file}.TauCoeff.bin
+   fi
 done
 
 $nln $fixcrtm/Nalli.IRwater.EmisCoeff.bin   ./crtm_coeffs/Nalli.IRwater.EmisCoeff.bin
