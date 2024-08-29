@@ -43,3 +43,40 @@ calc_increment_ncio.x is from github.com/jswhit/GSI-utils (branch calc_inc_fix).
 fv3_intel.exe is from github.com/ufs-community/ufs-weather-model.
 
 to turn off IAU, set iaudelthrs=-1 and iaufhrs=6 in config.sh
+
+
+To set up an experiment:
+
+1) go to <basedir>/scripts, run git clone https://github.com/NOAA-PSL/3dvar_workflow <exptname>
+   cd <exptname>; git submodule update --init --recursive # to checkout build_gsinfo submodule
+2) create experiment directory <basedir>/<exptname>
+   create analdate.sh and fg_only.sh in the top level experiment directory (<expthome>).
+   fg_only should contain "export fg_only=true" plus "export cold_start=false" and "export skip_calc_increment=1"
+   and analdate.csh should contain
+   "export analdate=YYYYMMDDHH1" and "export analdate_end=YYYYMMDDHH2", where YYYYMMDDHH1,2 is the
+   date you want the experiment to start and end.
+3) go back to workflow directory <basedir>/scripts/<exptname>
+   edit getrestart.sh, set s3path to point to s3 bucket you want to retrieve initial conditions from
+   set envars analdate and datapath (<basedir>/<exptname>)
+   run getrestart.sh to retrieve initial conditions (will create directory <basedir>/<exptname>/<analdate>)
+4) edit config.sh, set exptname, basedir for machine you will run on 
+   For hercules, default is /work2/noaa/gsienkf/${USER}
+   Make any other changes to experiment parameters in config.sh, or other config files/namelists
+   If gsi *info file generator is modified, move build_gsinfo directory out of the way and clone
+   your fork with desired changes.
+5) *IMPORTANT* edit s3archive.sh so that data is saved to correct s3 bucket (and you are not over-writing previous scout run data) 
+   If you don't want to archive on s3, edit config.sh and set save_s3=false.
+   To archive on HPSS, set save_hpss=true and set hsidir to HPSS path you want to archive to (note - won't
+   work on orion or hercules).
+6) create exec_<exptname> directory populate with calc_increment_ncio.x, fv3_intel.exe and gsi.x (you can either copy
+   from /work2/noaa/gsienkf/whitaker/C96_3dvar_iau5 for hercules, or compile yourself building ufs-weather-model, GSI and GSI-utils.
+   (GSI must use https://github.com/jack-woollen/GSI, and GSI-utils https://github.com/jswhit/GSI-utils/tree/calc_inc_fix)
+   ufs-weather-model can be head of develop from https://github.com/ufs-community/ufs-weather-model.  
+   To build model On hercules, I used
+
+git clone https://github.com/ufs-community/ufs-weather-model ufs-weather-model-develop-atm
+cd ufs-weather-model-develop-atm
+git checkout develop
+git submodule update --init --recursive
+cd tests
+./compile.sh hercules "-DAPP=ATM -D32BIT=ON -DCCPP_SUITES=FV3_GFS_v17_p8" intel intel atm YES
