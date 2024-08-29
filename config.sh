@@ -2,7 +2,7 @@
 export cores=`expr $NODES \* $corespernode`
 echo "running on $machine using $NODES nodes and $cores CORES"
 
-export ndates_job=1 # number of DA cycles to run in one job submission
+export ndates_job=20 # number of DA cycles to run in one job submission
 # resolution of control and ensmemble.
 export RES=96   
 export RES_CTL=$RES
@@ -20,7 +20,7 @@ export ORES3=`echo $OCNRES | cut -c3-5`
 # in this case, to recenter around EnVar analysis set recenter_control_wgt=100
 export recenter_control_wgt=100
 export recenter_ensmean_wgt=`expr 100 - $recenter_control_wgt`
-export exptname="C${RES}_3dvar_iau"
+export exptname="C${RES}_3dvar_iau5"
 # for 'passive' or 'replay' cycling of control fcst 
 export replay_controlfcst='false'
 
@@ -40,8 +40,13 @@ export resubmit='true'
 # YYYYMMDDHH analysis date string to see if
 # full ensemble should be saved to HPSS (returns 0 if 
 # HPSS save should be done)
-export save_hpss="false"
-export save_s3="false"
+if [ $machine == "orion" ] || [ $machine == "hercules" ]; then
+   export save_hpss="false"
+   export save_s3="true"
+else
+   export save_hpss="false"
+   export save_s3="true"
+fi
 # override values from above for debugging.
 #export cleanup_controlanl='false'
 #export cleanup_observer='false'
