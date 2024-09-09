@@ -20,7 +20,7 @@ export ORES3=`echo $OCNRES | cut -c3-5`
 # in this case, to recenter around EnVar analysis set recenter_control_wgt=100
 export recenter_control_wgt=100
 export recenter_ensmean_wgt=`expr 100 - $recenter_control_wgt`
-export exptname="C${RES}_3dvar_iau5"
+export exptname="C${RES}_3dvar_iau_1997stream"
 # for 'passive' or 'replay' cycling of control fcst 
 export replay_controlfcst='false'
 
@@ -148,6 +148,7 @@ elif [ $machine == "hercules" ]; then
    module load py-netcdf4
    module list
    #export PATH="/work/noaa/gsienkf/whitaker/miniconda3/bin:$PATH"
+   export HIRS_FIX=/work/noaa/gsienkf/whitaker/hirs_fix
    export HDF5_DISABLE_VERSION_CHECK=1
    export WGRIB=`which wgrib`
 elif [ "$machine" == 'noaacloud' ]; then
