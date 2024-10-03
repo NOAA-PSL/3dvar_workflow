@@ -1,0 +1,11 @@
+#!/bin/sh
+##SBATCH -q normal  
+#SBATCH --clusters=es
+##SBATCH --partition=rdtn
+#SBATCH --partition=eslogin_c6
+#SBATCH -t 8:00:00
+#SBATCH -A ira-da     
+#SBATCH -N 1    
+#SBATCH -J tarit
+#SBATCH -e tarit.err
+#SBATCH -o tarit.out
