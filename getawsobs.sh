@@ -8,7 +8,11 @@ which aws
 if [ $? -ne 0 ]; then
    echo "SLURM_CLUSTER_NAME=$SLURM_CLUSTER_NAME"
    if  [ $SLURM_CLUSTER_NAME == 'es' ]; then #
-      module use /ncrc/proj/epic/spack-stack/c6/spack-stack-1.6.0/envs/unified-env/install/modulefiles/Core
+      if test -d /gpfs/f6; then
+         module use /ncrc/proj/epic/spack-stack/c6/spack-stack-1.6.0/envs/unified-env/install/modulefiles/Core
+      else
+         module use /ncrc/proj/epic/spack-stack/spack-stack-1.6.0/envs/unified-env/install/modulefiles/Core
+      fi
       module load stack-intel
       module load awscli-v2
    elif [ $SLURM_CLUSTER_NAME == 'hercules' ]; then
