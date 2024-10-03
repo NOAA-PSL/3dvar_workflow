@@ -20,7 +20,7 @@ export ORES3=`echo $OCNRES | cut -c3-5`
 # in this case, to recenter around EnVar analysis set recenter_control_wgt=100
 export recenter_control_wgt=100
 export recenter_ensmean_wgt=`expr 100 - $recenter_control_wgt`
-export exptname="C${RES}_3dvar_iau_1997stream"
+export exptname="C${RES}_3dvar_iau_1979stream"
 # for 'passive' or 'replay' cycling of control fcst 
 export replay_controlfcst='false'
 
@@ -40,13 +40,8 @@ export resubmit='true'
 # YYYYMMDDHH analysis date string to see if
 # full ensemble should be saved to HPSS (returns 0 if 
 # HPSS save should be done)
-if [ $machine == "orion" ] || [ $machine == "hercules" ]; then
-   export save_hpss="false"
-   export save_s3="true"
-else
-   export save_hpss="false"
-   export save_s3="true"
-fi
+export save_hpss="false"
+export save_s3="true"
 # override values from above for debugging.
 #export cleanup_controlanl='false'
 #export cleanup_observer='false'
@@ -176,7 +171,7 @@ elif [ "$machine" == 'noaacloud' ]; then
    export HIRS_FIX=/lustre/hirs_fix
    export HDF5_DISABLE_VERSION_CHECK=1
    export WGRIB=`which wgrib`
-elif [ "$machine" == 'gaea' ]; then
+elif [ "$machine" == 'gaeac5' ]; then
    export basedir=/gpfs/f5/nggps_psd/scratch/${USER}
    export datadir=${basedir}
    export datapath="${datadir}/${exptname}"
@@ -189,27 +184,58 @@ elif [ "$machine" == 'gaea' ]; then
    fi
    export sstice_datapath=/gpfs/f5/nggps_psd/proj-shared/${USER}/era5sstice
    ulimit -s unlimited
-   #source /lustre/f2/dev/role.epic/contrib/Lmod_init.sh
-   #module unload cray-libsci
-   #module load PrgEnv-intel/8.3.3
-   #module load intel-classic/2023.1.0
-   #module load cray-mpich/8.1.25
-   module use /ncrc/proj/epic/spack-stack/spack-stack-1.5.1/envs/unified-env/install/modulefiles/Core
-   module use /ncrc/proj/epic/spack-stack/spack-stack-1.5.1/envs/gsi-addon/install/modulefiles/Core
+
+   module use /ncrc/proj/epic/spack-stack//spack-stack-1.6.0/envs/gsi-addon-dev/install/modulefiles/Core
    module load stack-intel/2023.1.0
    module load stack-cray-mpich/8.1.25
+   module load netcdf-c/4.9.2
+   module load netcdf-fortran/4.6.1
    module load parallelio
-   module load crtm/2.4.0
+   module load crtm/2.4.0.1
    module load gsi-ncdiag
    module load grib-util
-   module load awscli
    module load bufr/11.7.0
    module load python
    module load py-netcdf4
    module list
+   export LD_LIBRARY_PATH="/opt/intel/oneapi/mkl/2022.0.2/lib/intel64:${LD_LIBRARY_PATH}"
+
+   export HIRS_FIX=/gpfs/f5/nggps_psd/proj-shared/Jeffrey.S.Whitaker/hirs_fix
+   export HDF5_DISABLE_VERSION_CHECK=1
+   export WGRIB=`which wgrib`
+elif [ "$machine" == 'gaeac6' ]; then
+   #export basedir=/gpfs/f5/nggps_psd/scratch/${USER}
+   export basedir=/gpfs/f6/ira-da/scratch/${USER}
+   export datadir=${basedir}
+   export datapath="${datadir}/${exptname}"
+   export logdir="${datadir}/logs/${exptname}"
+   export hsidir="/ESRL/BMC/gsienkf/2year/whitaker/${exptname}"
+   if [ $use_s3obs == "true" ]; then
+      export obs_datapath=${datapath}/dumps
+   else
+      export obs_datapath=${datadir}/dumps
+   fi
+   #export sstice_datapath=/gpfs/f5/nggps_psd/proj-shared/${USER}/era5sstice
+   export sstice_datapath=/gpfs/f6/drsa-precip4/world-shared/${USER}/era5sstice
+   ulimit -s unlimited
+
+   module use /ncrc/proj/epic/spack-stack/c6/spack-stack-1.6.0/envs/gsi-addon/install/modulefiles/Core
+   module load stack-intel/2023.2.0
+   module load stack-cray-mpich/8.1.29
+   module load parallelio
+   module load crtm/2.4.0
+   module load gsi-ncdiag
+   module load grib-util
+   module load awscli-v2
+   module load bufr/11.7.0
+   module load python
+   module load py-netcdf4
+   module list
+
    #export PATH="/gpfs/f5/nggps_psd/proj-shared/Jeffrey.S.Whitaker/conda/bin:${PATH}"
    #export MKLROOT=/opt/intel/oneapi/mkl/2022.0.2
    #export LD_LIBRARY_PATH="${MKLROOT}/lib/intel64:${LD_LIBRARY_PATH}"
+   export HIRS_FIX=/gpfs/f6/drsa-precip4/proj-shared/Jeffrey.S.Whitaker/hirs_fix
    export HDF5_DISABLE_VERSION_CHECK=1
    export WGRIB=`which wgrib`
 else
@@ -373,14 +399,27 @@ elif [ "$machine" == 'noaacloud' ]; then
    export fixcrtm=$CRTM_FIX
    export execdir=${scriptsdir}/exec_${machine}
    export gsiexec=${execdir}/gsi.x
-elif [ "$machine" == 'gaea' ]; then
+elif [ "$machine" == 'gaeac5' ]; then
    export fv3gfspath=/gpfs/f5/nggps_psd/proj-shared/Jeffrey.S.Whitaker/fix_NEW
-   export FIXDIR=/gpfs/f5/epic/world-shared/UFS-WM_RT/NEMSfv3gfs/input-data-20221101
+   export FIXDIR=/gpfs/f5/epic/world-shared/UFS-WM_RT/NEMSfv3gfs/input-data-20240501
    export FIXFV3=${fv3gfspath}/fix_fv3_gmted2010
    export FIXGLOBAL=${fv3gfspath}/fix_am
    # optional - specify location of co2 files for model
    export CO2DIR=/gpfs/f5/nggps_psd/proj-shared/Jeffrey.S.Whitaker/fix_NEW/fix_am/co2dat_4a
    export gsipath=/gpfs/f5/nggps_psd/proj-shared/Jeffrey.S.Whitaker/GSI
+   export fixgsi=${gsipath}/fix
+   export fixcrtm=$CRTM_FIX
+   export execdir=${scriptsdir}/exec_${machine}
+   export enkfbin=${execdir}/enkf.x
+   export gsiexec=${execdir}/gsi.x
+elif [ "$machine" == 'gaeac6' ]; then
+   export fv3gfspath=/gpfs/f6/drsa-precip4/proj-shared/Jeffrey.S.Whitaker/fix_NEW
+   export FIXDIR=/gpfs/f6/drsa-precip4/proj-shared/Jeffrey.S.Whitaker/input-data-20240501
+   export FIXFV3=${fv3gfspath}/fix_fv3_gmted2010
+   export FIXGLOBAL=${fv3gfspath}/fix_am
+   # optional - specify location of co2 files for model
+   export CO2DIR=/gpfs/f6/drsa-precip4/proj-shared/Jeffrey.S.Whitaker/fix_NEW/fix_am/co2dat_4a
+   export gsipath=/gpfs/f6/drsa-precip4/proj-shared/Jeffrey.S.Whitaker/GSI
    export fixgsi=${gsipath}/fix
    export fixcrtm=$CRTM_FIX
    export execdir=${scriptsdir}/exec_${machine}

@@ -7,6 +7,9 @@ if [[ "$VERBOSE" = "YES" ]]; then
 fi
 export OMP_NUM_THREADS=${OMP_NUM_THREADS:-1}
 export OMP_STACKSIZE=${OMP_STACKSIZE:-256M}
+if [ $machine == "gaeac6" ]; then
+   export FI_CXI_RX_MATCH_MODE=[hybrid|software]
+fi
 
 # Set experiment name and analysis date
 adate=${analdate:-2010081900}

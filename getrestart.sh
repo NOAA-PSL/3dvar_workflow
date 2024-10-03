@@ -1,8 +1,8 @@
 #!/bin/sh
 #SBATCH --cluster=es
-#SBATCH --partition=eslogin
+#SBATCH --partition=eslogin_c6
 #SBATCH -t 00:10:00
-#SBATCH -A nggps_psd
+#SBATCH -A drsa-precip4
 #SBATCH -N 1     
 #SBATCH -J getrestart
 #SBATCH -e getrestart.out
@@ -13,11 +13,9 @@ which aws
 if [ $? -ne 0 ]; then
    echo "SLURM_CLUSTER_NAME=$SLURM_CLUSTER_NAME"
    if  [ $SLURM_CLUSTER_NAME == 'es' ]; then #
-      source /lustre/f2/dev/role.epic/contrib/Lmod_init.sh
-      module use /lustre/f2/dev/wpo/role.epic/contrib/spack-stack/c4/modulefiles
-      module use /lustre/f2/dev/wpo/role.epic/contrib/spack-stack/c4/spack-stack-1.5.0/envs/unified-env/install/modulefiles/Core
-      module load stack-intel/2022.0.2
-      module load awscli
+      module use /ncrc/proj/epic/spack-stack/spack-stack-1.6.0/envs/unified-env/install/modulefiles/Core
+      module load stack-intel
+      module load awscli-v2
    elif [ $SLURM_CLUSTER_NAME == 'hercules' ]; then
       module purge
       module use /work/noaa/epic/role-epic/spack-stack/hercules/spack-stack-1.6.0/envs/unified-env/install/modulefiles/Core 
