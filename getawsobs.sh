@@ -48,7 +48,7 @@ S3PATH_PRIVATE=/nnja-private-eumetsat/observations/reanalysis
 TARGET_DIR=${OUTPATH}/${CDUMP}.${YYYYMMDD}/${HH}/atmos
 mkdir -p $TARGET_DIR
 #obtypes=("airs" "airs" "amsua" "amsub" "amv" "atms" "cris" "cris" "geo" "geo" "gps" "hirs" "hirs" "hirs" "iasi" "mhs" "msu" "saphir" "seviri" "ssmi" "ssmis" "ssu")
-obtypes=("airs" "amsua" "amsua" "amsub""atms" "cris" "cris" "geo" "geo" "hirs" "hirs" "hirs" "iasi" "mhs" "msu" "saphir" "seviri" "ssu")
+obtypes=("airs" "amsua" "amsua" "amsub" "atms" "cris" "cris" "geo" "geo" "hirs" "hirs" "hirs" "iasi" "mhs" "msu" "saphir" "seviri" "ssu")
 #if [ $YYYYMMDDHH -lt "0009050106" ]; then
 ## before 2009050106 for amsua use nasa/r21c_repro/gmao_r21c_repro
 #   dirs=("nasa" "nasa/r21c_repro" "1bamub" "merged" "atms" "cris" "crisf4" "goesnd" "goesfv" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "eumetsat" "eumetsat" "1bssu")
