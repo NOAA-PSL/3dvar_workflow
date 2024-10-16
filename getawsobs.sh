@@ -32,8 +32,7 @@ if [ $? -ne 0 ]; then
    exit 1
 fi
 
-AWS_ACCESS_KEY_ID=''
-AWS_SECRET_ACCESS_KEY=''
+NNJA_PRVIATE_PROFILE=nnja-private-eumetsat-read
 
 YYYYMM=`echo $YYYYMMDDHH | cut -c1-6`
 YYYYMMDD=`echo $YYYYMMDDHH | cut -c1-8`
@@ -172,7 +171,7 @@ for n in ${!obtypes[@]}; do
   if [ ${obtypes[$n]} == $obtyp ] || [ $obtyp == "all" ]; then
      s3file=s3:/"${S3PATH_PRIVATE}/${obtypes[$n]}/${dirs[$n]}/${YYYY}/${MM}/bufr/gdas.${YYYYMMDD}.t${HH}z.${obnames[$n]}.tm00.bufr_d"
      localfile="${TARGET_DIR}/${CDUMP}.t${HH}z.${obnames[$n]}.tm00.bufr_d"
-     AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY aws s3 cp --only-show-errors $s3file $localfile &
+     aws s3 cp --profile ${NNJA_PRVIATE_PROFILE} --only-show-errors $s3file $localfile &
   fi
 done
 wait
