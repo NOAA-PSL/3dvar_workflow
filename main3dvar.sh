@@ -113,7 +113,7 @@ if [ $use_s3obs == "true" ]; then
     else
        # aws cli only works on eslogin partition on gaea, or service partition on hercules/orion
        cat ${machine}_preamble_frontend getawsobs.sh > job_getawsobs.sh
-       sbatch --wait --export=obs_datapath=${obs_datapath},analdate=${analdate},obtyp="all" job_getawsobs.sh
+       sbatch --wait --export=obs_datapath=${obs_datapath},analdate=${analdate},obtyp="all",machine=${machine} job_getawsobs.sh
     fi
     if [ $? -eq 0 ] && [ -s $obs_datapath/gdas.${yr}${mon}${day}/${hr}/atmos/gdas.t${hr}z.prepbufr ]; then
        echo "$analdate done getting bufr dumps `date`"
@@ -186,7 +186,7 @@ if [ $save_hpss == 'true' ] || [ $save_s3 == 'true' ]; then
    if [ $machine == "noaacloud" ]; then
       sh s3archive.sh 2> s3archive.out 1> s3archive.out
    else
-      sbatch --export=machine=${machine},analdate=${analdate},analdatem1=${analdatem1},datapath=${datapath},hsidir=${hsidir},save_hpss=${save_hpss},obs_datapath=${obs_datapath} job_hpss.sh
+      sbatch --export=machine=${machine},analdate=${analdate},analdatem1=${analdatem1},datapath=${datapath},hsidir=${hsidir},save_hpss=${save_hpss},obs_datapath=${obs_datapath},machine=${machine} job_hpss.sh
    fi
 fi
 
