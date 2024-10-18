@@ -186,7 +186,7 @@ if [ $save_hpss == 'true' ] || [ $save_s3 == 'true' ]; then
    if [ $machine == "noaacloud" ]; then
       sh s3archive.sh 2> s3archive.out 1> s3archive.out
    else
-      sbatch --export=machine=${machine},analdate=${analdate},analdatem1=${analdatem1},datapath=${datapath},hsidir=${hsidir},save_hpss=${save_hpss},obs_datapath=${obs_datapath},machine=${machine} job_hpss.sh
+      sbatch --export=machine=${machine},analdate=${analdate},analdatem1=${analdatem1},datapath=${datapath},hsidir=${hsidir},save_hpss=${save_hpss},obs_datapath=${obs_datapath} job_hpss.sh
    fi
 fi
 

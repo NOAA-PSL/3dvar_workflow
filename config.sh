@@ -20,7 +20,7 @@ export ORES3=`echo $OCNRES | cut -c3-5`
 # in this case, to recenter around EnVar analysis set recenter_control_wgt=100
 export recenter_control_wgt=100
 export recenter_ensmean_wgt=`expr 100 - $recenter_control_wgt`
-export exptname="C${RES}_3dvar_iau_1979stream"
+export exptname="C${RES}_3dvar_iau_1997stream"
 # for 'passive' or 'replay' cycling of control fcst 
 export replay_controlfcst='false'
 
@@ -186,8 +186,8 @@ elif [ "$machine" == 'gaeac5' ]; then
    ulimit -s unlimited
 
    module use /ncrc/proj/epic/spack-stack//spack-stack-1.6.0/envs/gsi-addon-dev/install/modulefiles/Core
-   module load stack-intel/2023.1.0
-   module load stack-cray-mpich/8.1.25
+   module load stack-intel/2023.2.0
+   module load stack-cray-mpich/8.1.28
    module load netcdf-c/4.9.2
    module load netcdf-fortran/4.6.1
    module load parallelio
@@ -406,7 +406,7 @@ elif [ "$machine" == 'gaeac5' ]; then
    export FIXGLOBAL=${fv3gfspath}/fix_am
    # optional - specify location of co2 files for model
    export CO2DIR=/gpfs/f5/nggps_psd/proj-shared/Jeffrey.S.Whitaker/fix_NEW/fix_am/co2dat_4a
-   export gsipath=/gpfs/f5/nggps_psd/proj-shared/Jeffrey.S.Whitaker/GSI
+   export gsipath=/gpfs/f5/nggps_psd/proj-shared/Jeffrey.S.Whitaker/GSI-jack
    export fixgsi=${gsipath}/fix
    export fixcrtm=$CRTM_FIX
    export execdir=${scriptsdir}/exec_${machine}
@@ -419,7 +419,7 @@ elif [ "$machine" == 'gaeac6' ]; then
    export FIXGLOBAL=${fv3gfspath}/fix_am
    # optional - specify location of co2 files for model
    export CO2DIR=/gpfs/f6/drsa-precip4/proj-shared/Jeffrey.S.Whitaker/fix_NEW/fix_am/co2dat_4a
-   export gsipath=/gpfs/f6/drsa-precip4/proj-shared/Jeffrey.S.Whitaker/GSI
+   export gsipath=/gpfs/f6/drsa-precip4/proj-shared/Jeffrey.S.Whitaker/GSI-jack
    export fixgsi=${gsipath}/fix
    export fixcrtm=$CRTM_FIX
    export execdir=${scriptsdir}/exec_${machine}
