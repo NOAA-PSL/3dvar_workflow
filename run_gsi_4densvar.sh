@@ -132,6 +132,7 @@ fi
 if [[ -s $datobs/${prefix_obs}.satwnd.${suffix} ]]; then
    use_prepb_satwnd=.false.
 else
+   echo "no satwnd bufr file - use satwnds in prepbufr file"
    use_prepb_satwnd=.true.
 fi
 if [ $use_correlated_oberrs == ".true." ];  then
