@@ -113,7 +113,7 @@ if [ $use_s3obs == "true" ]; then
     else
        # aws cli only works on eslogin partition on gaea, or service partition on hercules/orion
        cat ${machine}_preamble_frontend getawsobs.sh > job_getawsobs.sh
-       sbatch --wait --export=obs_datapath=${obs_datapath},analdate=${analdate},obtyp="all" job_getawsobs.sh
+       sbatch --wait --export=obs_datapath=${obs_datapath},analdate=${analdate},obtyp="all",machine=${machine} job_getawsobs.sh
     fi
     if [ $? -eq 0 ] && [ -s $obs_datapath/gdas.${yr}${mon}${day}/${hr}/atmos/gdas.t${hr}z.prepbufr ]; then
        echo "$analdate done getting bufr dumps `date`"

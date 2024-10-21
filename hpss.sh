@@ -1,6 +1,6 @@
 # need envars:  machine, analdate, datapath, hsidir
 exitstat=0
-if [ $machine == "gaea" ]; then
+if [ $machine == "gaeac5" ] || [ $machine == "gaeac6" ]; then
    htar=/sw/rdtn/hpss/default/bin/htar
    hsi=/sw/rdtn/hpss/default/bin/hsi
 else

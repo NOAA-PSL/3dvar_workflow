@@ -1,0 +1,30 @@
+#!/bin/sh
+##SBATCH -q urgent
+##SBATCH -q debug
+#SBATCH --cluster=c6
+#SBATCH -t 08:00:00
+#SBATCH -A ira-da      
+#SBATCH -N 5     
+#SBATCH -J C96_3dvar_iau
+#SBATCH -e C96_3dvar_iau.err
+#SBATCH -o C96_3dvar_iau.out
+
+export NODES=$SLURM_NNODES
+export corespernode=$SLURM_CPUS_ON_NODE
+export machine='gaeac6'
+
+# for control forecast
+if [ $NODES -eq 5 ]; then
+  export control_threads=1
+  export control_proc=480
+  export write_groups_ctl=4 # write groups for control forecast.
+  export write_tasks_ctl=24
+  export layout_ctl="8,8" # layout_x,layout_y (total # mpi tasks = $layout_x*$layout_y*6=($fg_proc/$fg_threads) - $write_tasks*$write_groups)
+else
+  echo "processor layout for $NODES nodes not set"
+  exit 1
+fi
+
+export fg_proc=$corespernode
+export fg_threads=1
+export gsi_control_threads=24
