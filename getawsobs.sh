@@ -3,6 +3,7 @@ YYYYMMDDHH=${analdate:-$1}
 OUTPATH=${obs_datapath:-$2}
 obtyp=${obtyp_default:-$3} # specify single ob type, default is all obs.
 nbackmax=${nbackmax:-10}
+dryrun=${dryrun:="false"} # if "true", just print aws download command, check to see if file exists on aws
 
 which aws
 if [ $? -ne 0 ]; then
@@ -78,12 +79,19 @@ for n in ${!obtypes[@]}; do
         s3file=s3:/"${S3PATH}/${obtypes[$n]}/${dirs[$n]}/${YYYY}/${MM}/bufr/${dumpnames[$n]}.${YYYYMMDD}.t${HH}z.${obnames[$n]}.tm00.bufr_d"
         localfile="${TARGET_DIR}/${CDUMP}.t${HH}z.${obnames[$n]}.tm00.bufr_d"
      fi
-     #aws s3 ls --no-sign-request $s3file
      nback=$[$nback+1]
-     aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
-     if [ $nback -eq $nbackmax ]; then
-        wait
-	nback=0
+     if [ $dryrun == "true" ]; then
+         echo "aws s3 cp --no-sign-request --only-show-errors $s3file $localfile"
+         aws s3 ls --no-sign-request $s3file
+	 if [ $? -ne 0 ]; then
+             echo "$s3file not found"
+	 fi
+     else
+         aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
+         if [ $nback -eq $nbackmax ]; then
+            wait
+            nback=0
+         fi
      fi
      #ls -l $localfile
   fi
@@ -100,7 +108,15 @@ for obtype in $obtypes; do
       fi
       localfile="${TARGET_DIR}/${CDUMP}.t${HH}z.${obtype}"
       #aws s3 ls --no-sign-request $s3file
-      aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
+      if [ $dryrun == "true" ]; then
+          echo "aws s3 cp --no-sign-request --only-show-errors $s3file $localfile"
+          aws s3 ls --no-sign-request $s3file
+	  if [ $? -ne 0 ]; then
+             echo "$s3file not found"
+	  fi
+      else
+          aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
+      fi
       #ls -l $localfile
    fi
 done
@@ -110,7 +126,15 @@ if [ $obtyp == "osbuv8" ] || [ $obtyp == "all" ]; then
    s3file=s3:/"${S3PATH}/ozone/cfsr/${YYYY}/${MM}/bufr/gdas.${YYYYMMDD}.t${HH}z.osbuv8.tm00.bufr_d"
    localfile="${TARGET_DIR}/${CDUMP}.t${HH}z.osbuv8.tm00.bufr_d"
    #aws s3 ls --no-sign-request $s3file
-   aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
+   if [ $dryrun == "true" ]; then
+      echo "aws s3 cp --no-sign-request --only-show-errors $s3file $localfile"
+      aws s3 ls --no-sign-request $s3file
+      if [ $? -ne 0 ]; then
+         echo "$s3file not found"
+      fi
+   else
+      aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
+   fi
    #ls -l $localfile
 fi
 # NCEP bufr
@@ -120,8 +144,18 @@ obnames=("ompslp" "ompsn8" "ompst8")
 dumpnames=("gdas" "gdas" "gdas")
 for n in ${!obtypes[@]}; do
   if [ ${obtypes[$n]} == $obtyp ] || [ $obtyp == "all" ]; then
+     s3file=s3:/"${S3PATH}/${obtypes[$n]}/${dirs[$n]}/${obnames[n]}/${YYYY}/${MM}/bufr/${dumpnames[$n]}.${YYYYMMDD}.t${HH}z.${obnames[$n]}.tm00.bufr_d"
+     localfile="${TARGET_DIR}/${CDUMP}.t${HH}z.${obnames[$n]}.tm00.bufr_d"
      #aws s3 ls --no-sign-request $s3file
-     aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
+     if [ $dryrun == "true" ]; then
+        echo "aws s3 cp --no-sign-request --only-show-errors $s3file $localfile"
+        aws s3 ls --no-sign-request $s3file
+	if [ $? -ne 0 ]; then
+           echo "$s3file not found"
+	fi
+     else
+        aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
+     fi
      #ls -l $localfile
   fi
 done
@@ -130,7 +164,15 @@ if [ $obtyp == "sbuv_v87" ] || [ $obtyp == "all" ]; then
    s3file=s3:/"${S3PATH}/ozone/nasa/sbuv_v87/${YYYY}/${MM}/bufr/sbuv_v87.${YYYYMMDD}.${HH}z.bufr"
    localfile="${TARGET_DIR}/${CDUMP}.t${HH}z.sbuv_v87.tm00.bufr_d"
    #aws s3 ls --no-sign-request $s3file
-   aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
+   if [ $dryrun == "true" ]; then
+      echo "aws s3 cp --no-sign-request --only-show-errors $s3file $localfile"
+      aws s3 ls --no-sign-request $s3file
+      if [ $? -ne 0 ]; then
+         echo "$s3file not found"
+      fi
+   else
+      aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
+   fi
    #ls -l $localfile
 fi
 # NASA netcdf
@@ -143,21 +185,39 @@ for n in ${!obtypes[@]}; do
      s3file=s3:/"${S3PATH}/${obtypes[$n]}/${dirs[$n]}/${obnames[$n]}/${YYYY}/${MM}/netcdf/${dumpnames[$n]}.${YYYYMMDD}_${HH}z.nc"
      localfile="${TARGET_DIR}/${dumpnames[$n]}.${YYYYMMDD}_${HH}z.nc"
      #aws s3 ls --no-sign-request $s3file
-     aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
+     if [ $dryrun == "true" ]; then
+        echo "aws s3 cp --no-sign-request --only-show-errors $s3file $localfile"
+        aws s3 ls --no-sign-request $s3file
+	if [ $? -ne 0 ]; then
+           echo "$s3file not found"
+	fi
+     else
+        aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
+     fi
      #ls -l $localfile
   fi
 done
 wait
 # over-write with private eumetsat data if available
-obstypes=("gps" "ssmi" "amv" "ssmis")
+obtypes=("gps" "ssmi" "amv" "ssmis")
 dirs=("eumetsat" "eumetsat" "merged" "eumetsat")
 obnames=("gpsro" "ssmit" "satwnd" "ssmisu")
 for n in ${!obtypes[@]}; do
   if [ ${obtypes[$n]} == $obtyp ] || [ $obtyp == "all" ]; then
      s3file=s3:/"${S3PATH_PRIVATE}/${obtypes[$n]}/${dirs[$n]}/${YYYY}/${MM}/bufr/gdas.${YYYYMMDD}.t${HH}z.${obnames[$n]}.tm00.bufr_d"
      localfile="${TARGET_DIR}/${CDUMP}.t${HH}z.${obnames[$n]}.tm00.bufr_d"
-     aws s3 cp --profile ${NNJA_PRVIATE_PROFILE} --only-show-errors $s3file $localfile &
+     if [ $dryrun == "true" ]; then
+        echo "aws s3 cp --profile ${NNJA_PRVIATE_PROFILE} --only-show-errors $s3file $localfile"
+        aws s3 ls --profile ${NNJA_PRVIATE_PROFILE} $s3file
+	if [ $? -ne 0 ]; then
+            echo "$s3file not found"
+	fi
+     else
+        aws s3 cp --profile ${NNJA_PRVIATE_PROFILE} --only-show-errors $s3file $localfile &
+     fi
   fi
 done
 wait
-ls -l ${TARGET_DIR}
+if [ $dryrun != "true" ]; then
+   ls -l ${TARGET_DIR}
+fi
