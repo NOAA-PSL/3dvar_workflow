@@ -1,7 +1,7 @@
 obtyp_default="all"
-YYYYMMDDHH=${analdate:-$1}
-OUTPATH=${obs_datapath:-$2}
-obtyp=${obtyp_default:-$3} # specify single ob type, default is all obs.
+YYYYMMDDHH=${1:-$analdate}
+OUTPATH=${2:-$obs_datapath}
+obtyp=${3:-$obtyp_default} # specify single ob type, default is all obs.
 nbackmax=${nbackmax:-10}
 dryrun=${dryrun:="false"} # if "true", just print aws download command, check to see if file exists on aws
 
@@ -51,10 +51,10 @@ S3PATH_PRIVATE=/nnja-private-eumetsat/observations/reanalysis
 # directory structure required by global-workflow
 TARGET_DIR=${OUTPATH}/${CDUMP}.${YYYYMMDD}/${HH}/atmos
 mkdir -p $TARGET_DIR
-obtypes=("airs" "amsua" "amsua" "amsub" "amv" "atms" "cris" "cris" "geo" "geo" "gps" "hirs" "hirs" "hirs" "iasi" "mhs" "msu" "saphir" "seviri" "ssmi" "ssmis" "ssu")
-dirs=("nasa" "nasa" "1bamua" "1bamub" "satwnd" "atms" "cris" "crisf4" "goesnd" "goesfv" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "ssmit" "ssmisu" "1bssu")
-obnames=("aqua" "aqua" "1bamua" "1bamub" "satwnd" "atms" "cris" "crisf4" "goesnd" "goesfv" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "ssmit" "ssmisu" "1bssu")
-dumpnames=("airs_disc_final" "amsua_disc_final" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas")
+obtypes=("airs" "amsua" "amsua" "amsub" "amv" "atms" "cris" "cris" "geo" "geo" "geo" "geo" "gps" "hirs" "hirs" "hirs" "iasi" "mhs" "msu" "saphir" "seviri" "ssmi" "ssmis" "ssu")
+dirs=("nasa" "nasa" "1bamua" "1bamub" "satwnd" "atms" "cris" "crisf4" "goesnd" "goesfv" "gsrcsr" "ahicsr" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "ssmit" "ssmisu" "1bssu")
+obnames=("aqua" "aqua" "1bamua" "1bamub" "satwnd" "atms" "cris" "crisf4" "goesnd" "goesfv" "gsrcsr" "ahicsr" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "ssmit" "ssmisu" "1bssu")
+dumpnames=("airs_disc_final" "amsua_disc_final" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas")
 nback=0
 for n in ${!obtypes[@]}; do
   if [ ${obtypes[$n]} == $obtyp ] || [ $obtyp == "all" ]; then
