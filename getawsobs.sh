@@ -1,15 +1,20 @@
 obtyp_default="all"
-YYYYMMDDHH=${analdate:-$1}
-OUTPATH=${obs_datapath:-$2}
-obtyp=${obtyp_default:-$3} # specify single ob type, default is all obs.
+YYYYMMDDHH=${1:-$analdate}
+OUTPATH=${2:-$obs_datapath}
+obtyp=${3:-$obtyp_default} # specify single ob type, default is all obs.
 nbackmax=${nbackmax:-10}
+dryrun=${dryrun:="false"} # if "true", just print aws download command, check to see if file exists on aws
 
 which aws
 if [ $? -ne 0 ]; then
-   echo "SLURM_CLUSTER_NAME=$SLURM_CLUSTER_NAME"
-   if  [ $SLURM_CLUSTER_NAME == 'es' ]; then #
-      module use /ncrc/proj/epic/spack-stack/spack-stack-1.6.0/envs/unified-env/install/modulefiles/Core
-      module load stack-intel/2023.1.0
+   echo "SLURM_CLUSTER_NAME=$SLURM_CLUSTER_NAME machine=${machine}"
+   if [ $SLURM_CLUSTER_NAME == 'es' ]; then 
+      if [ $machine == "gaeac5" ]; then
+         module use /ncrc/proj/epic/spack-stack/spack-stack-1.6.0/envs/unified-env/install/modulefiles/Core
+      elif [ $machine == "gaeac6" ]; then
+         module use /ncrc/proj/epic/spack-stack/c6/spack-stack-1.6.0/envs/unified-env/install/modulefiles/Core
+      fi
+      module load stack-intel
       module load awscli-v2
    elif [ $SLURM_CLUSTER_NAME == 'hercules' ]; then
       module purge
@@ -32,6 +37,8 @@ if [ $? -ne 0 ]; then
    exit 1
 fi
 
+NNJA_PRVIATE_PROFILE=nnja-private-eumetsat-read
+
 YYYYMM=`echo $YYYYMMDDHH | cut -c1-6`
 YYYYMMDD=`echo $YYYYMMDDHH | cut -c1-8`
 HH=`echo $YYYYMMDDHH | cut -c9-10`
@@ -40,32 +47,14 @@ MM=`echo $YYYYMMDDHH | cut -c5-6`
 YYYY=`echo $YYYYMMDDHH | cut -c1-4`
 CDUMP='gdas'
 S3PATH=/noaa-reanalyses-pds/observations/reanalysis
+S3PATH_PRIVATE=/nnja-private-eumetsat/observations/reanalysis
 # directory structure required by global-workflow
 TARGET_DIR=${OUTPATH}/${CDUMP}.${YYYYMMDD}/${HH}/atmos
 mkdir -p $TARGET_DIR
-#obtypes=("airs" "airs" "amsua" "amsub" "amv" "atms" "cris" "cris" "geo" "geo" "gps" "hirs" "hirs" "hirs" "iasi" "mhs" "msu" "saphir" "seviri" "ssmi" "ssmis" "ssu")
-obtypes=("airs" "amsua" "amsua" "amsub" "amv" "atms" "cris" "cris" "geo" "geo" "gps" "hirs" "hirs" "hirs" "iasi" "mhs" "msu" "saphir" "seviri" "ssmi" "ssmis" "ssu")
-#if [ $YYYYMMDDHH -lt "0009050106" ]; then
-## before 2009050106 for amsua use nasa/r21c_repro/gmao_r21c_repro
-#   dirs=("nasa" "nasa/r21c_repro" "1bamub" "merged" "atms" "cris" "crisf4" "goesnd" "goesfv" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "eumetsat" "eumetsat" "1bssu")
-#   obnames=("aqua" "1bamu" "1bamub" "satwnd" "atms" "cris" "crisf4" "goesnd" "goesfv" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "ssmit" "ssmisu" "1bssu")
-#   dumpnames=("airs_disc_final" "gmao_r21c_repro" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas")
-if [ $YYYYMMDDHH -ge "2001090106" ] &&  [ $YYYYMMDDHH -le "2016123118" ]; then
-   # use EUMETSAT reprocessed gpsro
-   #dirs=("nasa" "airsev" "1bamua" "1bamub" "merged" "atms" "cris" "crisf4" "goesnd" "goesfv" "eumetsat" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "eumetsat" "eumetsat" "1bssu")
-   #obnames=("aqua" "airsev" "1bamua" "1bamub" "satwnd" "atms" "cris" "crisf4" "goesnd" "goesfv" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "ssmit" "ssmisu" "1bssu")
-   #dumpnames=("airs_disc_final" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas")
-   dirs=("nasa" "nasa" "1bamua" "1bamub" "merged" "atms" "cris" "crisf4" "goesnd" "goesfv" "eumetsat" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "eumetsat" "eumetsat" "1bssu")
-   obnames=("aqua" "aqua" "1bamua" "1bamub" "satwnd" "atms" "cris" "crisf4" "goesnd" "goesfv" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "ssmit" "ssmisu" "1bssu")
-   dumpnames=("airs_disc_final" "amsua_disc_final" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas")
-else
-   #dirs=("nasa" "airsev" "1bamua" "1bamub" "merged" "atms" "cris" "crisf4" "goesnd" "goesfv" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "eumetsat" "eumetsat" "1bssu")
-   #obnames=("aqua" "airsev" "1bamua" "1bamub" "satwnd" "atms" "cris" "crisf4" "goesnd" "goesfv" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "ssmit" "ssmisu" "1bssu")
-   #dumpnames=("airs_disc_final" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas")
-   dirs=("nasa" "nasa" "1bamua" "1bamub" "merged" "atms" "cris" "crisf4" "goesnd" "goesfv" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "eumetsat" "eumetsat" "1bssu")
-   obnames=("aqua" "aqua" "1bamua" "1bamub" "satwnd" "atms" "cris" "crisf4" "goesnd" "goesfv" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "ssmit" "ssmisu" "1bssu")
-   dumpnames=("airs_disc_final" "amsua_disc_final" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas")
-fi
+obtypes=("airs" "amsua" "amsua" "amsub" "amv" "atms" "cris" "cris" "geo" "geo" "geo" "geo" "gps" "hirs" "hirs" "hirs" "iasi" "mhs" "msu" "saphir" "seviri" "ssmi" "ssmis" "ssu")
+dirs=("nasa" "nasa" "1bamua" "1bamub" "satwnd" "atms" "cris" "crisf4" "goesnd" "goesfv" "gsrcsr" "ahicsr" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "ssmit" "ssmisu" "1bssu")
+obnames=("aqua" "aqua" "1bamua" "1bamub" "satwnd" "atms" "cris" "crisf4" "goesnd" "goesfv" "gsrcsr" "ahicsr" "gpsro" "1bhrs2" "1bhrs3" "1bhrs4" "mtiasi" "1bmhs" "1bmsu" "saphir" "sevcsr" "ssmit" "ssmisu" "1bssu")
+dumpnames=("airs_disc_final" "amsua_disc_final" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas" "gdas")
 nback=0
 for n in ${!obtypes[@]}; do
   if [ ${obtypes[$n]} == $obtyp ] || [ $obtyp == "all" ]; then
@@ -90,12 +79,19 @@ for n in ${!obtypes[@]}; do
         s3file=s3:/"${S3PATH}/${obtypes[$n]}/${dirs[$n]}/${YYYY}/${MM}/bufr/${dumpnames[$n]}.${YYYYMMDD}.t${HH}z.${obnames[$n]}.tm00.bufr_d"
         localfile="${TARGET_DIR}/${CDUMP}.t${HH}z.${obnames[$n]}.tm00.bufr_d"
      fi
-     #aws s3 ls --no-sign-request $s3file
      nback=$[$nback+1]
-     aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
-     if [ $nback -eq $nbackmax ]; then
-        wait
-	nback=0
+     if [ $dryrun == "true" ]; then
+         echo "aws s3 cp --no-sign-request --only-show-errors $s3file $localfile"
+         aws s3 ls --no-sign-request $s3file
+	 if [ $? -ne 0 ]; then
+             echo "$s3file not found"
+	 fi
+     else
+         aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
+         if [ $nback -eq $nbackmax ]; then
+            wait
+            nback=0
+         fi
      fi
      #ls -l $localfile
   fi
@@ -112,7 +108,15 @@ for obtype in $obtypes; do
       fi
       localfile="${TARGET_DIR}/${CDUMP}.t${HH}z.${obtype}"
       #aws s3 ls --no-sign-request $s3file
-      aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
+      if [ $dryrun == "true" ]; then
+          echo "aws s3 cp --no-sign-request --only-show-errors $s3file $localfile"
+          aws s3 ls --no-sign-request $s3file
+	  if [ $? -ne 0 ]; then
+             echo "$s3file not found"
+	  fi
+      else
+          aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
+      fi
       #ls -l $localfile
    fi
 done
@@ -122,7 +126,15 @@ if [ $obtyp == "osbuv8" ] || [ $obtyp == "all" ]; then
    s3file=s3:/"${S3PATH}/ozone/cfsr/${YYYY}/${MM}/bufr/gdas.${YYYYMMDD}.t${HH}z.osbuv8.tm00.bufr_d"
    localfile="${TARGET_DIR}/${CDUMP}.t${HH}z.osbuv8.tm00.bufr_d"
    #aws s3 ls --no-sign-request $s3file
-   aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
+   if [ $dryrun == "true" ]; then
+      echo "aws s3 cp --no-sign-request --only-show-errors $s3file $localfile"
+      aws s3 ls --no-sign-request $s3file
+      if [ $? -ne 0 ]; then
+         echo "$s3file not found"
+      fi
+   else
+      aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
+   fi
    #ls -l $localfile
 fi
 # NCEP bufr
@@ -132,8 +144,18 @@ obnames=("ompslp" "ompsn8" "ompst8")
 dumpnames=("gdas" "gdas" "gdas")
 for n in ${!obtypes[@]}; do
   if [ ${obtypes[$n]} == $obtyp ] || [ $obtyp == "all" ]; then
+     s3file=s3:/"${S3PATH}/${obtypes[$n]}/${dirs[$n]}/${obnames[n]}/${YYYY}/${MM}/bufr/${dumpnames[$n]}.${YYYYMMDD}.t${HH}z.${obnames[$n]}.tm00.bufr_d"
+     localfile="${TARGET_DIR}/${CDUMP}.t${HH}z.${obnames[$n]}.tm00.bufr_d"
      #aws s3 ls --no-sign-request $s3file
-     aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
+     if [ $dryrun == "true" ]; then
+        echo "aws s3 cp --no-sign-request --only-show-errors $s3file $localfile"
+        aws s3 ls --no-sign-request $s3file
+	if [ $? -ne 0 ]; then
+           echo "$s3file not found"
+	fi
+     else
+        aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
+     fi
      #ls -l $localfile
   fi
 done
@@ -142,7 +164,15 @@ if [ $obtyp == "sbuv_v87" ] || [ $obtyp == "all" ]; then
    s3file=s3:/"${S3PATH}/ozone/nasa/sbuv_v87/${YYYY}/${MM}/bufr/sbuv_v87.${YYYYMMDD}.${HH}z.bufr"
    localfile="${TARGET_DIR}/${CDUMP}.t${HH}z.sbuv_v87.tm00.bufr_d"
    #aws s3 ls --no-sign-request $s3file
-   aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
+   if [ $dryrun == "true" ]; then
+      echo "aws s3 cp --no-sign-request --only-show-errors $s3file $localfile"
+      aws s3 ls --no-sign-request $s3file
+      if [ $? -ne 0 ]; then
+         echo "$s3file not found"
+      fi
+   else
+      aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
+   fi
    #ls -l $localfile
 fi
 # NASA netcdf
@@ -155,9 +185,39 @@ for n in ${!obtypes[@]}; do
      s3file=s3:/"${S3PATH}/${obtypes[$n]}/${dirs[$n]}/${obnames[$n]}/${YYYY}/${MM}/netcdf/${dumpnames[$n]}.${YYYYMMDD}_${HH}z.nc"
      localfile="${TARGET_DIR}/${dumpnames[$n]}.${YYYYMMDD}_${HH}z.nc"
      #aws s3 ls --no-sign-request $s3file
-     aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
+     if [ $dryrun == "true" ]; then
+        echo "aws s3 cp --no-sign-request --only-show-errors $s3file $localfile"
+        aws s3 ls --no-sign-request $s3file
+	if [ $? -ne 0 ]; then
+           echo "$s3file not found"
+	fi
+     else
+        aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
+     fi
      #ls -l $localfile
   fi
 done
 wait
-ls -l ${TARGET_DIR}
+# over-write with private eumetsat data if available
+obtypes=("gps" "ssmi" "amv" "ssmis")
+dirs=("eumetsat" "eumetsat" "merged" "eumetsat")
+obnames=("gpsro" "ssmit" "satwnd" "ssmisu")
+for n in ${!obtypes[@]}; do
+  if [ ${obtypes[$n]} == $obtyp ] || [ $obtyp == "all" ]; then
+     s3file=s3:/"${S3PATH_PRIVATE}/${obtypes[$n]}/${dirs[$n]}/${YYYY}/${MM}/bufr/gdas.${YYYYMMDD}.t${HH}z.${obnames[$n]}.tm00.bufr_d"
+     localfile="${TARGET_DIR}/${CDUMP}.t${HH}z.${obnames[$n]}.tm00.bufr_d"
+     if [ $dryrun == "true" ]; then
+        echo "aws s3 cp --profile ${NNJA_PRVIATE_PROFILE} --only-show-errors $s3file $localfile"
+        aws s3 ls --profile ${NNJA_PRVIATE_PROFILE} $s3file
+	if [ $? -ne 0 ]; then
+            echo "$s3file not found"
+	fi
+     else
+        aws s3 cp --profile ${NNJA_PRVIATE_PROFILE} --only-show-errors $s3file $localfile &
+     fi
+  fi
+done
+wait
+if [ $dryrun != "true" ]; then
+   ls -l ${TARGET_DIR}
+fi
